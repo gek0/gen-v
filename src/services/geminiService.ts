@@ -1,18 +1,24 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 // A helper function to introduce a delay between polling requests
 const sleep = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
  * Generates a video based on a text prompt using the Gemini API.
  * @param prompt The text prompt describing the video to generate.
+ * @param apiKey The API key for authentication.
  * @param onProgress A callback function to report progress updates to the UI.
  * @returns A promise that resolves to a local blob URL for the generated video.
  */
-export const generateVideo = async (prompt: string, onProgress: (message: string) => void): Promise<string> => {
+export const generateVideo = async (
+    prompt: string,
+    apiKey: string,
+    onProgress: (message: string) => void
+): Promise<string> => {
     try {
+        // Initialize GoogleGenAI with the provided API key
+        const ai = new GoogleGenAI({ apiKey });
+
         onProgress("Initializing video generation...");
         let operation = await ai.models.generateVideos({
             model: 'veo-2.0-generate-001',
@@ -39,8 +45,8 @@ export const generateVideo = async (prompt: string, onProgress: (message: string
         }
 
         onProgress("Downloading video data...");
-        // The API requires the API key to be appended to the download link for authentication
-        const videoUrlWithKey = `${downloadLink}&key=${process.env.API_KEY}`;
+        // Append the API key to the download link for authentication
+        const videoUrlWithKey = `${downloadLink}&key=${apiKey}`;
         const response = await fetch(videoUrlWithKey);
 
         if (!response.ok) {
