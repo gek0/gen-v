@@ -28,6 +28,12 @@ gen-v/
 
 ---
 
+## 📸 Screenshots
+
+![Main application](./readme_assets/app.png)
+
+---
+
 ## 🛠️ Getting Started
 
 ### Prerequisites
